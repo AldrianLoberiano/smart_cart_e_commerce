@@ -34,7 +34,7 @@
             </div>
 
             <!-- Product Info -->
-            <div class="space-y-6" x-data="quantitySelector(1, 1, {{ $product->stock }})">
+            <div class="space-y-6" x-data="productStockMonitor({{ $product->id }}, {{ $product->stock }}, {{ $product->low_stock_threshold }})">
                 <div>
                     <h1 class="text-4xl font-bold text-gray-900 mb-2">{{ $product->name }}</h1>
                     <p class="text-sm text-gray-600">SKU: {{ $product->sku }}</p>
@@ -70,33 +70,29 @@
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="text-sm font-medium text-gray-700">Availability:</span>
-                        @if ($product->isInStock())
-                            @if ($product->isLowStock())
-                                <span class="badge badge-warning text-base">⚠️ Low Stock - Only {{ $product->stock }}
-                                    left</span>
-                            @else
-                                <span class="badge badge-success text-base">✓ In Stock - {{ $product->stock }}
-                                    available</span>
-                            @endif
-                        @else
-                            <span class="badge badge-danger text-base">✗ Out of Stock</span>
-                        @endif
+                        <span x-show="currentStock > 0 && !isLowStock" class="badge badge-success text-base">
+                            ✓ In Stock - <span x-text="currentStock"></span> available
+                        </span>
+                        <span x-show="currentStock > 0 && isLowStock" class="badge badge-warning text-base">
+                            ⚠️ Low Stock - Only <span x-text="currentStock"></span> left
+                        </span>
+                        <span x-show="currentStock <= 0" class="badge badge-danger text-base">
+                            ✗ Out of Stock
+                        </span>
                     </div>
 
                     @if ($product->track_stock)
-                        @php
-                            $stockPercentage = ($product->stock / max($product->low_stock_threshold * 2, 100)) * 100;
-                            $stockPercentage = min($stockPercentage, 100);
-                        @endphp
                         <!-- Stock Level Progress Bar -->
                         <div>
                             <div class="flex justify-between text-xs text-gray-600 mb-1">
                                 <span>Stock Level</span>
-                                <span>{{ $product->stock }} / {{ $product->low_stock_threshold * 2 }} units</span>
+                                <span><span x-text="currentStock"></span> / {{ $product->low_stock_threshold * 2 }}
+                                    units</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-3">
-                                <div class="h-3 rounded-full transition-all {{ $product->isInStock() ? ($product->isLowStock() ? 'bg-orange-500' : 'bg-green-500') : 'bg-red-500' }}"
-                                    style="width: {{ $stockPercentage }}%"></div>
+                                <div class="h-3 rounded-full transition-all"
+                                    :class="currentStock > 0 ? (isLowStock ? 'bg-orange-500' : 'bg-green-500') : 'bg-red-500'"
+                                    :style="`width: ${stockPercentage}%`"></div>
                             </div>
                         </div>
                     @endif
@@ -131,15 +127,14 @@
 
                 <!-- Add to Cart -->
                 <div class="space-y-3 pt-4">
-                    <button
-                        @click="window.dispatchEvent(new CustomEvent('add-to-cart', { detail: { productId: {{ $product->id }}, quantity: quantity } }))"
-                        :disabled="!{{ $product->isInStock() ? 'true' : 'false' }}"
-                        class="w-full btn btn-primary py-4 text-lg">
+                    <button @click="addToCart()" :disabled="currentStock <= 0" class="w-full btn btn-primary py-4 text-lg"
+                        :class="{ 'opacity-50 cursor-not-allowed': currentStock <= 0 }">
                         <svg class="w-6 h-6 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
-                        Add to Cart
+                        <span x-show="currentStock > 0">Add to Cart</span>
+                        <span x-show="currentStock <= 0">Out of Stock</span>
                     </button>
                 </div>
             </div>
@@ -222,3 +217,107 @@
         @endif
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        function productStockMonitor(productId, initialStock, lowStockThreshold) {
+            return {
+                productId: productId,
+                currentStock: initialStock,
+                lowStockThreshold: lowStockThreshold,
+                maxStock: lowStockThreshold * 2,
+                quantity: 1,
+                min: 1,
+
+                init() {
+                    // Update stock every 5 seconds
+                    setInterval(() => {
+                        this.fetchCurrentStock();
+                    }, 5000);
+                },
+
+                get isLowStock() {
+                    return this.currentStock <= this.lowStockThreshold && this.currentStock > 0;
+                },
+
+                get stockPercentage() {
+                    return Math.min((this.currentStock / Math.max(this.maxStock, 100)) * 100, 100);
+                },
+
+                get max() {
+                    return Math.max(this.currentStock, 1);
+                },
+
+                async fetchCurrentStock() {
+                    try {
+                        const response = await fetch(`/api/product-stock/${this.productId}`);
+                        const data = await response.json();
+
+                        if (data.stock !== this.currentStock) {
+                            this.currentStock = data.stock;
+
+                            // Adjust quantity if it exceeds available stock
+                            if (this.quantity > this.currentStock) {
+                                this.quantity = Math.max(this.currentStock, 1);
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error fetching stock:', error);
+                    }
+                },
+
+                increment() {
+                    if (this.quantity < this.max) {
+                        this.quantity++;
+                    }
+                },
+
+                decrement() {
+                    if (this.quantity > this.min) {
+                        this.quantity--;
+                    }
+                },
+
+                async addToCart() {
+                    if (this.currentStock <= 0) {
+                        window.showNotification('Product is out of stock', 'error');
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch('/api/cart/add', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            },
+                            body: JSON.stringify({
+                                product_id: this.productId,
+                                quantity: this.quantity
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            window.showNotification('Added to cart successfully!', 'success');
+
+                            // Update cart count
+                            if (window.updateCartCount) {
+                                window.updateCartCount(data.item_count);
+                            }
+
+                            // Immediately refresh stock after adding to cart
+                            this.fetchCurrentStock();
+                        } else {
+                            window.showNotification(data.error || 'Failed to add to cart', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        window.showNotification('An error occurred', 'error');
+                    }
+                }
+            };
+        }
+    </script>
+@endpush

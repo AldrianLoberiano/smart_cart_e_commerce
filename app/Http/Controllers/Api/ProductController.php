@@ -25,6 +25,21 @@ class ProductController extends Controller
     }
 
     /**
+     * Get product stock
+     */
+    public function stock($id): JsonResponse
+    {
+        $product = Product::findOrFail($id);
+
+        return response()->json([
+            'stock' => $product->stock,
+            'is_in_stock' => $product->isInStock(),
+            'is_low_stock' => $product->isLowStock(),
+            'track_stock' => $product->track_stock,
+        ]);
+    }
+
+    /**
      * Search products
      */
     public function search(Request $request): JsonResponse

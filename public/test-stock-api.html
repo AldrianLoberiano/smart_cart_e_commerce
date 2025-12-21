@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; }
+        .result { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        #stock { font-size: 24px; font-weight: bold; color: #28a745; }
+        .error { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <h1>Real-Time Stock Monitor</h1>
+    
+    <div class="result">
+        <h2>Product ID: 1 (MacBook Pro 16")</h2>
+        <p>Current Stock: <span id="stock">Loading...</span></p>
+        <p>Last Updated: <span id="lastUpdate">Never</span></p>
+        <p id="error" class="error"></p>
+    </div>
+    
+    <button onclick="fetchStock()">Refresh Stock Now</button>
+    <button onclick="toggleAutoRefresh()">Toggle Auto-Refresh (5s)</button>
+    <p>Auto-Refresh: <strong id="autoStatus">OFF</strong></p>
+
+    <script>
+        let autoRefreshInterval = null;
+        const productId = 1;
+
+        async function fetchStock() {
+            const errorEl = document.getElementById('error');
+            const stockEl = document.getElementById('stock');
+            const updateEl = document.getElementById('lastUpdate');
+            
+            try {
+                errorEl.textContent = '';
+                const response = await fetch(`/api/product-stock/${productId}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                stockEl.textContent = data.stock;
+                stockEl.style.color = data.is_in_stock ? 
+                    (data.is_low_stock ? '#ff9800' : '#28a745') : 
+                    '#dc3545';
+                
+                updateEl.textContent = new Date().toLocaleTimeString();
+                
+                console.log('Stock data:', data);
+            } catch (error) {
+                errorEl.textContent = `Error: ${error.message}`;
+                stockEl.textContent = 'Error';
+                stockEl.style.color = '#dc3545';
+                console.error('Error fetching stock:', error);
+            }
+        }
+
+        function toggleAutoRefresh() {
+            const statusEl = document.getElementById('autoStatus');
+            
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+                autoRefreshInterval = null;
+                statusEl.textContent = 'OFF';
+                statusEl.style.color = 'black';
+            } else {
+                fetchStock(); // Fetch immediately
+                autoRefreshInterval = setInterval(fetchStock, 5000);
+                statusEl.textContent = 'ON';
+                statusEl.style.color = '#28a745';
+            }
+        }
+
+        // Fetch once on load
+        fetchStock();
+    </script>
+</body>
+</html>

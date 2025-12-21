@@ -20,6 +20,7 @@ Route::prefix('v1')->group(function () {
 
     // Product endpoints
     Route::get('/products/search', [ProductController::class, 'search']);
+    Route::get('/product-stock/{id}', [ProductController::class, 'stock']);
     Route::get('/products/{product}', [ProductController::class, 'show']);
 });
 
@@ -30,5 +31,6 @@ Route::patch('/cart/items/{itemKey}', [CartController::class, 'update']);
 Route::delete('/cart/items/{itemKey}', [CartController::class, 'destroy']);
 Route::delete('/cart', [CartController::class, 'clear']);
 Route::get('/products/search', [ProductController::class, 'search']);
+Route::get('/product-stock/{id}', [ProductController::class, 'stock']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
 Route::post('/checkout/process', [App\Http\Controllers\CheckoutController::class, 'process']);
