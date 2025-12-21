@@ -18,8 +18,8 @@
             </div>
         @endif
 
-        @if (empty($items) || count($items) === 0)
-            <!-- Empty Cart -->
+        <!-- Empty Cart -->
+        <template x-if="items.length === 0">
             <div class="text-center py-16">
                 <svg class="mx-auto h-32 w-32 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -31,40 +31,35 @@
                     Continue Shopping
                 </a>
             </div>
-        @else
-            <!-- Cart Items -->
+        </template>
+
+        <!-- Cart Items -->
+        <template x-if="items.length > 0">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Items List -->
                 <div class="lg:col-span-2 space-y-4">
-                    @foreach ($items as $item)
+                    <template x-for="item in items" :key="item.id">
                         <div class="card p-6">
                             <div class="flex items-center space-x-6">
                                 <!-- Product Image -->
-                                <img src="{{ $item['image'] ?? 'https://placehold.co/600x400?text=No+Image' }}"
-                                    alt="{{ $item['name'] ?? 'Product' }}" class="w-24 h-24 object-cover rounded-lg">
+                                <img :src="item.image || 'https://placehold.co/600x400?text=No+Image'"
+                                    :alt="item.name" class="w-24 h-24 object-cover rounded-lg">
 
                                 <!-- Product Details -->
                                 <div class="flex-1">
                                     <h3 class="text-lg font-semibold text-gray-900">
-                                        <a href="{{ route('products.show', $item['slug'] ?? '#') }}"
-                                            class="hover:text-primary-600">
-                                            {{ $item['name'] ?? 'Unknown Product' }}
+                                        <a :href="`/products/${item.slug}`" class="hover:text-primary-600"
+                                            x-text="item.name">
                                         </a>
                                     </h3>
-                                    <p class="text-primary-600 font-bold text-xl mt-1">
-                                        ${{ number_format($item['price'], 2) }}
-                                    </p>
+                                    <p class="text-primary-600 font-bold text-xl mt-1" x-text="formatPrice(item.price)"></p>
 
                                     <!-- Quantity Selector -->
                                     <div class="flex items-center space-x-4 mt-4">
-                                        <form action="{{ route('cart.update', 'product_' . $item['id']) }}" method="POST"
-                                            class="flex items-center space-x-2">
-                                            @csrf
-                                            @method('PATCH')
+                                        <div class="flex items-center space-x-2">
                                             <label class="text-sm text-gray-600">Quantity:</label>
                                             <div class="flex items-center border rounded-lg">
-                                                <button type="submit" name="quantity"
-                                                    value="{{ max(0, $item['quantity'] - 1) }}"
+                                                <button @click="updateQuantity(`product_${item.id}`, item.quantity - 1)"
                                                     class="px-3 py-1 hover:bg-gray-100 transition">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">
@@ -72,11 +67,11 @@
                                                             stroke-width="2" d="M20 12H4" />
                                                     </svg>
                                                 </button>
-                                                <input type="number" name="quantity" value="{{ $item['quantity'] }}"
+                                                <input type="number" :value="item.quantity"
+                                                    @change="updateQuantity(`product_${item.id}`, parseInt($event.target.value))"
                                                     min="1" max="99"
-                                                    class="w-16 text-center border-x py-1 focus:outline-none"
-                                                    onchange="this.form.submit()">
-                                                <button type="submit" name="quantity" value="{{ $item['quantity'] + 1 }}"
+                                                    class="w-16 text-center border-x py-1 focus:outline-none">
+                                                <button @click="updateQuantity(`product_${item.id}`, item.quantity + 1)"
                                                     class="px-3 py-1 hover:bg-gray-100 transition">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">
@@ -85,40 +80,32 @@
                                                     </svg>
                                                 </button>
                                             </div>
-                                        </form>
+                                        </div>
 
                                         <!-- Remove Button -->
-                                        <form action="{{ route('cart.remove', 'product_' . $item['id']) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="text-red-600 hover:text-red-800 text-sm font-medium transition"
-                                                onclick="return confirm('Remove this item from cart?')">
-                                                Remove
-                                            </button>
-                                        </form>
+                                        <button
+                                            @click="if(confirm('Remove this item from cart?')) removeItem(`product_${item.id}`)"
+                                            class="text-red-600 hover:text-red-800 text-sm font-medium transition">
+                                            Remove
+                                        </button>
                                     </div>
                                 </div>
 
                                 <!-- Item Total -->
                                 <div class="text-right">
-                                    <p class="text-lg font-bold text-gray-900">
-                                        ${{ number_format($item['price'] * $item['quantity'], 2) }}
-                                    </p>
+                                    <p class="text-lg font-bold text-gray-900"
+                                        x-text="formatPrice(item.price * item.quantity)"></p>
                                 </div>
                             </div>
                         </div>
-                    @endforeach
+                    </template>
 
                     <!-- Clear Cart -->
-                    <form action="{{ route('cart.clear') }}" method="POST" class="mt-4">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-medium"
-                            onclick="return confirm('Are you sure you want to clear your cart?')">
+                    <div class="mt-4">
+                        <button @click="clearCart()" class="text-red-600 hover:text-red-800 text-sm font-medium">
                             Clear Cart
                         </button>
-                    </form>
+                    </div>
                 </div>
 
                 <!-- Order Summary -->
@@ -128,17 +115,17 @@
 
                         <div class="space-y-3 mb-6">
                             <div class="flex justify-between text-gray-600">
-                                <span>Subtotal ({{ $itemCount }} items):</span>
-                                <span>${{ number_format($subtotal, 2) }}</span>
+                                <span>Subtotal (<span x-text="itemCount"></span> items):</span>
+                                <span x-text="formatPrice(subtotal)"></span>
                             </div>
                             <div class="flex justify-between text-gray-600">
                                 <span>Tax (8%):</span>
-                                <span>${{ number_format($tax, 2) }}</span>
+                                <span x-text="formatPrice(tax)"></span>
                             </div>
                             <div class="border-t pt-3">
                                 <div class="flex justify-between text-xl font-bold text-gray-900">
                                     <span>Total:</span>
-                                    <span>${{ number_format($total, 2) }}</span>
+                                    <span x-text="formatPrice(total)"></span>
                                 </div>
                             </div>
                         </div>
@@ -153,6 +140,6 @@
                     </div>
                 </div>
             </div>
-        @endif
+        </template>
     </div>
 @endsection

@@ -19,7 +19,7 @@ class CartService
         if (Auth::check()) {
             // Get cart items from database for logged-in users
             $cartItems = CartItem::where('user_id', Auth::id())
-                ->with(['product' => function($query) {
+                ->with(['product' => function ($query) {
                     $query->withTrashed(); // Include soft-deleted products
                 }])
                 ->get();
@@ -41,7 +41,7 @@ class CartService
             // Get cart from session for guest users
             $sessionId = Session::getId();
             $cartItems = CartItem::where('session_id', $sessionId)
-                ->with(['product' => function($query) {
+                ->with(['product' => function ($query) {
                     $query->withTrashed(); // Include soft-deleted products
                 }])
                 ->get();
@@ -148,7 +148,7 @@ class CartService
         if (Auth::check()) {
             $cartItem = CartItem::where('user_id', Auth::id())
                 ->where('product_id', $productId)
-                ->with(['product' => function($query) {
+                ->with(['product' => function ($query) {
                     $query->withTrashed();
                 }])
                 ->first();
@@ -156,7 +156,7 @@ class CartService
             $sessionId = Session::getId();
             $cartItem = CartItem::where('session_id', $sessionId)
                 ->where('product_id', $productId)
-                ->with(['product' => function($query) {
+                ->with(['product' => function ($query) {
                     $query->withTrashed();
                 }])
                 ->first();
@@ -217,7 +217,7 @@ class CartService
     {
         // Clean up orphaned cart items (products that no longer exist)
         $this->cleanOrphanedItems();
-        
+
         $items = $this->getItems();
         $subtotal = 0;
 
@@ -236,7 +236,7 @@ class CartService
             'item_count' => array_sum(array_column($items, 'quantity')),
         ];
     }
-    
+
     /**
      * Clean up cart items with deleted/missing products
      */

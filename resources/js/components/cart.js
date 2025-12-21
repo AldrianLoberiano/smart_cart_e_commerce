@@ -49,6 +49,7 @@ export default () => ({
         try {
             const response = await axios.get('/api/cart');
             this.items = response.data.items || [];
+            console.log('Cart loaded, items:', this.items);
         } catch (error) {
             console.error('Error loading cart:', error);
             this.items = [];
@@ -66,13 +67,10 @@ export default () => ({
             });
             
             console.log('Cart add response:', response.data);
-            this.items = response.data.items;
-            this.isOpen = true; // Open cart sidebar
-            console.log('Cart opened, items:', this.items);
+            this.items = response.data.items || [];
             window.showNotification('Item added to cart', 'success');
             
-            // Dispatch event
-            window.dispatchEvent(new CustomEvent('cart:updated'));
+            // Don't dispatch cart:updated here as we already have the latest data
         } catch (error) {
             console.error('Error adding to cart:', error);
             window.showNotification('Failed to add item to cart', 'error');
@@ -93,8 +91,8 @@ export default () => ({
                 quantity: quantity
             });
             
-            this.items = response.data.items;
-            window.dispatchEvent(new CustomEvent('cart:updated'));
+            this.items = response.data.items || [];
+            // Don't dispatch cart:updated as we already have the latest data
         } catch (error) {
             console.error('Error updating cart:', error);
             window.showNotification('Failed to update cart', 'error');
@@ -108,9 +106,9 @@ export default () => ({
         
         try {
             const response = await axios.delete(`/api/cart/items/${itemId}`);
-            this.items = response.data.items;
+            this.items = response.data.items || [];
             window.showNotification('Item removed from cart', 'success');
-            window.dispatchEvent(new CustomEvent('cart:updated'));
+            // Don't dispatch cart:updated as we already have the latest data
         } catch (error) {
             console.error('Error removing item:', error);
             window.showNotification('Failed to remove item', 'error');
@@ -130,7 +128,7 @@ export default () => ({
             await axios.delete('/api/cart');
             this.items = [];
             window.showNotification('Cart cleared', 'success');
-            window.dispatchEvent(new CustomEvent('cart:updated'));
+            // Don't dispatch cart:updated as we already set items to empty
         } catch (error) {
             console.error('Error clearing cart:', error);
             window.showNotification('Failed to clear cart', 'error');

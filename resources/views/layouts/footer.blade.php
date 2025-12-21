@@ -15,8 +15,8 @@
                 <ul class="space-y-2 text-sm">
                     <li><a href="{{ route('home') }}" class="hover:text-white transition">Home</a></li>
                     <li><a href="{{ route('products.index') }}" class="hover:text-white transition">Products</a></li>
-                    <li><a href="#" class="hover:text-white transition">About Us</a></li>
-                    <li><a href="#" class="hover:text-white transition">Contact</a></li>
+                    <li><a href="{{ route('about') }}" class="hover:text-white transition">About Us</a></li>
+                    <li><a href="{{ route('contact') }}" class="hover:text-white transition">Contact</a></li>
                 </ul>
             </div>
 
@@ -24,10 +24,14 @@
             <div>
                 <h3 class="text-white font-semibold mb-4">Customer Service</h3>
                 <ul class="space-y-2 text-sm">
-                    <li><a href="#" class="hover:text-white transition">Shipping Policy</a></li>
-                    <li><a href="#" class="hover:text-white transition">Returns & Refunds</a></li>
-                    <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
-                    <li><a href="#" class="hover:text-white transition">Terms of Service</a></li>
+                    <li><a href="{{ route('shipping.policy') }}" class="hover:text-white transition">Shipping Policy</a>
+                    </li>
+                    <li><a href="{{ route('returns.refunds') }}" class="hover:text-white transition">Returns &
+                            Refunds</a></li>
+                    <li><a href="{{ route('privacy.policy') }}" class="hover:text-white transition">Privacy Policy</a>
+                    </li>
+                    <li><a href="{{ route('terms.service') }}" class="hover:text-white transition">Terms of Service</a>
+                    </li>
                 </ul>
             </div>
 
@@ -36,8 +40,10 @@
                 <h3 class="text-white font-semibold mb-4">Newsletter</h3>
                 <p class="text-sm mb-4">Subscribe to get special offers and updates.</p>
                 <form class="flex">
-                    <input type="email" id="newsletter-email" name="email" placeholder="Your email" autocomplete="email" class="flex-1 px-4 py-2 rounded-l-lg text-gray-900">
-                    <button type="submit" class="bg-primary-600 px-4 py-2 rounded-r-lg hover:bg-primary-700 transition">
+                    <input type="email" id="newsletter-email" name="email" placeholder="Your email"
+                        autocomplete="email" class="flex-1 px-4 py-2 rounded-l-lg text-gray-900">
+                    <button type="submit"
+                        class="bg-primary-600 px-4 py-2 rounded-r-lg hover:bg-primary-700 transition">
                         Subscribe
                     </button>
                 </form>
