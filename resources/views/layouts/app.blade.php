@@ -51,6 +51,9 @@
     <!-- Product Quick View Modal -->
     @include('components.product-modal')
 
+    <!-- Add to Cart Modal -->
+    @include('components.add-to-cart-modal')
+
     @stack('scripts')
 </body>
 

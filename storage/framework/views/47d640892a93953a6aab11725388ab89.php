@@ -51,8 +51,11 @@
     <!-- Product Quick View Modal -->
     <?php echo $__env->make('components.product-modal', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
+    <!-- Add to Cart Modal -->
+    <?php echo $__env->make('components.add-to-cart-modal', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+
     <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 
 </html>
-<?php /**PATH C:\SmartCart – Modern E-Commerce Web Application\smart_cart\resources\views/layouts/app.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\Users\Aldrian Loberiano\Documents\GitHub\smart_cart_e_commerce\resources\views/layouts/app.blade.php ENDPATH**/ ?>

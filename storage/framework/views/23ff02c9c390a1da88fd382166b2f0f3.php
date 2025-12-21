@@ -115,4 +115,4 @@
         </div>
     </div>
 </div>
-<?php /**PATH C:\SmartCart – Modern E-Commerce Web Application\resources\views/components/product-modal.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\Users\Aldrian Loberiano\Documents\GitHub\smart_cart_e_commerce\resources\views/components/product-modal.blade.php ENDPATH**/ ?>

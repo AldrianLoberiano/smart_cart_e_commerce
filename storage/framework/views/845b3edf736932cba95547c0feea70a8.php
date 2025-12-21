@@ -50,8 +50,8 @@
                                 <!-- Product Details -->
                                 <div class="flex-1">
                                     <h3 class="text-lg font-semibold text-gray-900">
-                                        <a :href="`/products/${item.slug}`"
-                                            class="hover:text-primary-600" x-text="item.name">
+                                        <a :href="`/products/${item.slug}`" class="hover:text-primary-600"
+                                            x-text="item.name">
                                         </a>
                                     </h3>
                                     <p class="text-primary-600 font-bold text-xl mt-1" x-text="formatPrice(item.price)"></p>
@@ -85,7 +85,8 @@
                                         </div>
 
                                         <!-- Remove Button -->
-                                        <button @click="if(confirm('Remove this item from cart?')) removeItem(`product_${item.id}`)"
+                                        <button
+                                            @click="if(confirm('Remove this item from cart?')) removeItem(`product_${item.id}`)"
                                             class="text-red-600 hover:text-red-800 text-sm font-medium transition">
                                             Remove
                                         </button>
@@ -94,7 +95,8 @@
 
                                 <!-- Item Total -->
                                 <div class="text-right">
-                                    <p class="text-lg font-bold text-gray-900" x-text="formatPrice(item.price * item.quantity)"></p>
+                                    <p class="text-lg font-bold text-gray-900"
+                                        x-text="formatPrice(item.price * item.quantity)"></p>
                                 </div>
                             </div>
                         </div>
@@ -144,4 +146,4 @@
     </div>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\SmartCart – Modern E-Commerce Web Application\smart_cart\resources\views/cart/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\Aldrian Loberiano\Documents\GitHub\smart_cart_e_commerce\resources\views/cart/index.blade.php ENDPATH**/ ?>

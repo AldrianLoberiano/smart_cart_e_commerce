@@ -244,7 +244,14 @@ class Product extends Model
             return false;
         }
 
+        // Log for debugging
+        \Log::info("Decrementing stock for product {$this->id} ({$this->name}): {$this->stock} - {$quantity}");
+
         $this->decrement('stock', $quantity);
+
+        // Log result
+        \Log::info("New stock for product {$this->id}: {$this->fresh()->stock}");
+
         return true;
     }
 

@@ -14,7 +14,8 @@
             <!-- Search Bar -->
             <div class="flex-1 max-w-2xl mx-8 relative">
                 <div class="relative">
-                    <input type="text" x-model="query" placeholder="Search products..."
+                    <input type="text" id="search-query" name="search" x-model="query"
+                        placeholder="Search products..." autocomplete="off"
                         class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                     <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
@@ -70,23 +71,17 @@
                     Products
                 </a>
 
-                <?php if(auth()->guard()->check()): ?>
-                    <a href="<?php echo e(route('orders.index')); ?>"
-                        class="text-gray-700 hover:text-primary-600 font-medium transition">
-                        Orders
-                    </a>
-                <?php endif; ?>
-
                 <!-- Cart Button -->
-                <button @click="toggleCart" class="relative p-2 text-gray-700 hover:text-primary-600 transition">
+                <a href="<?php echo e(route('cart.index')); ?>"
+                    class="relative p-2 text-gray-700 hover:text-primary-600 transition">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
-                    <span x-show="itemCount > 0" x-text="itemCount"
-                        class="absolute -top-1 -right-1 bg-primary-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                    </span>
-                </button>
+                    <span x-show="itemCount > 0"
+                        class="absolute -top-1 -right-1 bg-primary-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center"
+                        x-text="itemCount"></span>
+                </a>
 
                 <!-- User Menu -->
                 <?php if(auth()->guard()->check()): ?>
@@ -101,8 +96,6 @@
 
                         <div x-show="open" @click.away="open = false" x-transition
                             class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">
-                            <a href="<?php echo e(route('orders.index')); ?>" class="block px-4 py-2 text-gray-700 hover:bg-gray-50">My
-                                Orders</a>
                             <form method="POST" action="<?php echo e(route('logout')); ?>">
                                 <?php echo csrf_field(); ?>
                                 <button type="submit"
@@ -121,4 +114,4 @@
         </div>
     </div>
 </nav>
-<?php /**PATH C:\SmartCart – Modern E-Commerce Web Application\resources\views/layouts/navigation.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\Users\Aldrian Loberiano\Documents\GitHub\smart_cart_e_commerce\resources\views/layouts/navigation.blade.php ENDPATH**/ ?>

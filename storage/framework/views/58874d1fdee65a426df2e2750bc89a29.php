@@ -11,13 +11,6 @@
                     <h3 class="font-bold text-lg mb-4">Filters</h3>
 
                     <form method="GET" action="<?php echo e(route('products.index')); ?>" class="space-y-6">
-                        <!-- Search -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
-                            <input type="text" name="search" value="<?php echo e($filters['search'] ?? ''); ?>"
-                                placeholder="Search products..." class="input">
-                        </div>
-
                         <!-- Price Range -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Price Range</label>
@@ -64,21 +57,19 @@
                     <div>
                         <form method="GET" action="<?php echo e(route('products.index')); ?>" class="inline-block">
                             <?php $__currentLoopData = $filters; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <?php if($key !== 'sort_by' && $value): ?>
+                                <?php if($key !== 'sort' && $value): ?>
                                     <input type="hidden" name="<?php echo e($key); ?>" value="<?php echo e($value); ?>">
                                 <?php endif; ?>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            <select name="sort_by" onchange="this.form.submit()" class="input">
-                                <option value="created_at"
-                                    <?php echo e(($filters['sort_by'] ?? '') === 'created_at' ? 'selected' : ''); ?>>Newest</option>
-                                <option value="price_asc"
-                                    <?php echo e(($filters['sort_by'] ?? '') === 'price_asc' ? 'selected' : ''); ?>>Price: Low to High
+                            <select name="sort" onchange="this.form.submit()" class="input">
+                                <option value="newest">Newest</option>
+                                <option value="price_low" <?php echo e(($filters['sort'] ?? '') === 'price_low' ? 'selected' : ''); ?>>
+                                    Price: Low to High</option>
+                                <option value="price_high"
+                                    <?php echo e(($filters['sort'] ?? '') === 'price_high' ? 'selected' : ''); ?>>Price: High to Low
                                 </option>
-                                <option value="price_desc"
-                                    <?php echo e(($filters['sort_by'] ?? '') === 'price_desc' ? 'selected' : ''); ?>>Price: High to Low
-                                </option>
-                                <option value="name" <?php echo e(($filters['sort_by'] ?? '') === 'name' ? 'selected' : ''); ?>>Name:
-                                    A to Z</option>
+                                <option value="name" <?php echo e(($filters['sort'] ?? '') === 'name' ? 'selected' : ''); ?>>Name: A
+                                    to Z</option>
                             </select>
                         </form>
                     </div>
@@ -135,4 +126,4 @@
     </div>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\SmartCart – Modern E-Commerce Web Application\resources\views/products/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\Aldrian Loberiano\Documents\GitHub\smart_cart_e_commerce\resources\views/products/index.blade.php ENDPATH**/ ?>

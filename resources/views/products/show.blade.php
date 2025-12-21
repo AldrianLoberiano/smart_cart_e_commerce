@@ -66,16 +66,39 @@
                     </div>
                 @endif
 
-                <!-- Stock Status -->
-                <div>
-                    @if ($product->isInStock())
-                        @if ($product->isLowStock())
-                            <span class="badge badge-warning">Only {{ $product->stock }} left in stock</span>
+                <!-- Stock Status with Progress Bar -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-700">Availability:</span>
+                        @if ($product->isInStock())
+                            @if ($product->isLowStock())
+                                <span class="badge badge-warning text-base">⚠️ Low Stock - Only {{ $product->stock }}
+                                    left</span>
+                            @else
+                                <span class="badge badge-success text-base">✓ In Stock - {{ $product->stock }}
+                                    available</span>
+                            @endif
                         @else
-                            <span class="badge badge-success">In Stock</span>
+                            <span class="badge badge-danger text-base">✗ Out of Stock</span>
                         @endif
-                    @else
-                        <span class="badge badge-danger">Out of Stock</span>
+                    </div>
+
+                    @if ($product->track_stock)
+                        @php
+                            $stockPercentage = ($product->stock / max($product->low_stock_threshold * 2, 100)) * 100;
+                            $stockPercentage = min($stockPercentage, 100);
+                        @endphp
+                        <!-- Stock Level Progress Bar -->
+                        <div>
+                            <div class="flex justify-between text-xs text-gray-600 mb-1">
+                                <span>Stock Level</span>
+                                <span>{{ $product->stock }} / {{ $product->low_stock_threshold * 2 }} units</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="h-3 rounded-full transition-all {{ $product->isInStock() ? ($product->isLowStock() ? 'bg-orange-500' : 'bg-green-500') : 'bg-red-500' }}"
+                                    style="width: {{ $stockPercentage }}%"></div>
+                            </div>
+                        </div>
                     @endif
                 </div>
 

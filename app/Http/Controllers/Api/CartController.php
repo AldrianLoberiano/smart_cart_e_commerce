@@ -26,18 +26,23 @@ class CartController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $validated = $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1|max:99',
-        ]);
-
         try {
+            $validated = $request->validate([
+                'product_id' => 'required|exists:products,id',
+                'quantity' => 'required|integer|min:1|max:99',
+            ]);
+
             $cart = $this->cartService->addItem(
                 $validated['product_id'],
                 $validated['quantity']
             );
 
             return response()->json($cart);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'error' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()

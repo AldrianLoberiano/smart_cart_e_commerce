@@ -65,18 +65,49 @@
                 <?php endif; ?>
             </div>
 
-            <?php if($product->isInStock()): ?>
-                <?php if($product->isLowStock()): ?>
-                    <span class="badge badge-warning">Only <?php echo e($product->stock); ?> left</span>
+            <!-- Stock Information with Progress Bar -->
+            <div class="space-y-2">
+                <?php if($product->isInStock()): ?>
+                    <?php
+                        $stockPercentage = ($product->stock / max($product->low_stock_threshold * 2, 100)) * 100;
+                        $stockPercentage = min($stockPercentage, 100);
+                    ?>
+                    <div class="flex items-center justify-between text-sm">
+                        <?php if($product->isLowStock()): ?>
+                            <span class="badge badge-warning">⚠️ Low Stock</span>
+                            <span class="text-orange-600 font-semibold"><?php echo e($product->stock); ?> left</span>
+                        <?php else: ?>
+                            <span class="badge badge-success">✓ In Stock</span>
+                            <span class="text-green-600 font-semibold"><?php echo e($product->stock); ?> available</span>
+                        <?php endif; ?>
+                    </div>
+                    <!-- Stock Progress Bar -->
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="h-2 rounded-full transition-all <?php echo e($product->isLowStock() ? 'bg-orange-500' : 'bg-green-500'); ?>"
+                            style="width: <?php echo e($stockPercentage); ?>%"></div>
+                    </div>
                 <?php else: ?>
-                    <span class="badge badge-success">In Stock</span>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="badge badge-danger">✗ Out of Stock</span>
+                        <span class="text-red-600 font-semibold">0 available</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="h-2 rounded-full bg-red-500" style="width: 0%"></div>
+                    </div>
                 <?php endif; ?>
-            <?php else: ?>
-                <span class="badge badge-danger">Out of Stock</span>
-            <?php endif; ?>
+            </div>
         </a>
 
-        <button @click="$dispatch('add-to-cart', { productId: <?php echo e($product->id); ?>, quantity: 1 })"
+        <button @click="$dispatch('open-cart-modal', { product: {
+                id: <?php echo e($product->id); ?>,
+                name: <?php echo e(Js::from($product->name)); ?>,
+                price: <?php echo e($product->price); ?>,
+                primary_image: <?php echo e(Js::from($product->primary_image)); ?>,
+                stock: <?php echo e($product->stock); ?>,
+                isInStock: <?php echo e($product->isInStock() ? 'true' : 'false'); ?>,
+                isLowStock: <?php echo e($product->isLowStock() ? 'true' : 'false'); ?>
+
+            } })"
             class="w-full mt-4 btn btn-primary" <?php echo e(!$product->isInStock() ? 'disabled' : ''); ?>>
             <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -86,4 +117,4 @@
         </button>
     </div>
 </div>
-<?php /**PATH C:\SmartCart – Modern E-Commerce Web Application\smart_cart\resources\views/components/product-card.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\Users\Aldrian Loberiano\Documents\GitHub\smart_cart_e_commerce\resources\views/components/product-card.blade.php ENDPATH**/ ?>

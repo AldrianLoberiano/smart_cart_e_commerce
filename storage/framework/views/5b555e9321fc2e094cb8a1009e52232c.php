@@ -24,10 +24,14 @@
             <div>
                 <h3 class="text-white font-semibold mb-4">Customer Service</h3>
                 <ul class="space-y-2 text-sm">
-                    <li><a href="<?php echo e(route('shipping.policy')); ?>" class="hover:text-white transition">Shipping Policy</a></li>
-                    <li><a href="<?php echo e(route('returns.refunds')); ?>" class="hover:text-white transition">Returns & Refunds</a></li>
-                    <li><a href="<?php echo e(route('privacy.policy')); ?>" class="hover:text-white transition">Privacy Policy</a></li>
-                    <li><a href="<?php echo e(route('terms.service')); ?>" class="hover:text-white transition">Terms of Service</a></li>
+                    <li><a href="<?php echo e(route('shipping.policy')); ?>" class="hover:text-white transition">Shipping Policy</a>
+                    </li>
+                    <li><a href="<?php echo e(route('returns.refunds')); ?>" class="hover:text-white transition">Returns &
+                            Refunds</a></li>
+                    <li><a href="<?php echo e(route('privacy.policy')); ?>" class="hover:text-white transition">Privacy Policy</a>
+                    </li>
+                    <li><a href="<?php echo e(route('terms.service')); ?>" class="hover:text-white transition">Terms of Service</a>
+                    </li>
                 </ul>
             </div>
 
@@ -51,4 +55,4 @@
         </div>
     </div>
 </footer>
-<?php /**PATH C:\SmartCart – Modern E-Commerce Web Application\smart_cart\resources\views/layouts/footer.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\Users\Aldrian Loberiano\Documents\GitHub\smart_cart_e_commerce\resources\views/layouts/footer.blade.php ENDPATH**/ ?>

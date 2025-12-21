@@ -52,18 +52,49 @@
                 @endif
             </div>
 
-            @if ($product->isInStock())
-                @if ($product->isLowStock())
-                    <span class="badge badge-warning">Only {{ $product->stock }} left</span>
+            <!-- Stock Information with Progress Bar -->
+            <div class="space-y-2">
+                @if ($product->isInStock())
+                    @php
+                        $stockPercentage = ($product->stock / max($product->low_stock_threshold * 2, 100)) * 100;
+                        $stockPercentage = min($stockPercentage, 100);
+                    @endphp
+                    <div class="flex items-center justify-between text-sm">
+                        @if ($product->isLowStock())
+                            <span class="badge badge-warning">⚠️ Low Stock</span>
+                            <span class="text-orange-600 font-semibold">{{ $product->stock }} left</span>
+                        @else
+                            <span class="badge badge-success">✓ In Stock</span>
+                            <span class="text-green-600 font-semibold">{{ $product->stock }} available</span>
+                        @endif
+                    </div>
+                    <!-- Stock Progress Bar -->
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="h-2 rounded-full transition-all {{ $product->isLowStock() ? 'bg-orange-500' : 'bg-green-500' }}"
+                            style="width: {{ $stockPercentage }}%"></div>
+                    </div>
                 @else
-                    <span class="badge badge-success">In Stock</span>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="badge badge-danger">✗ Out of Stock</span>
+                        <span class="text-red-600 font-semibold">0 available</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="h-2 rounded-full bg-red-500" style="width: 0%"></div>
+                    </div>
                 @endif
-            @else
-                <span class="badge badge-danger">Out of Stock</span>
-            @endif
+            </div>
         </a>
 
-        <button @click="$dispatch('add-to-cart', { productId: {{ $product->id }}, quantity: 1 })"
+        <button
+            @click="$dispatch('open-cart-modal', { product: {
+                id: {{ $product->id }},
+                name: {{ Js::from($product->name) }},
+                price: {{ $product->price }},
+                primary_image: {{ Js::from($product->primary_image) }},
+                stock: {{ $product->stock }},
+                isInStock: {{ $product->isInStock() ? 'true' : 'false' }},
+                isLowStock: {{ $product->isLowStock() ? 'true' : 'false' }}
+            } })"
             class="w-full mt-4 btn btn-primary" {{ !$product->isInStock() ? 'disabled' : '' }}>
             <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
