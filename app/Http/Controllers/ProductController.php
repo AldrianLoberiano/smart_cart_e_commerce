@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Services\CartService;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public function __construct(
+        private CartService $cartService
+    ) {}
     /**
      * Display product listing
      */
@@ -32,10 +36,10 @@ class ProductController extends Controller
         }
 
         // Price filter
-        if ($request->has('min_price')) {
+        if ($request->filled('min_price')) {
             $query->where('price', '>=', $request->min_price);
         }
-        if ($request->has('max_price')) {
+        if ($request->filled('max_price')) {
             $query->where('price', '<=', $request->max_price);
         }
 
@@ -56,7 +60,7 @@ class ProductController extends Controller
         }
 
         $products = $query->paginate(12);
-        $cartItemCount = session('cart', []) ? count(session('cart', [])) : 0;
+        $cartItemCount = $this->cartService->getItemCount();
 
         return view('products.index', [
             'products' => $products,
@@ -71,7 +75,7 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         $product->load(['categories', 'reviews' => function ($query) {
-            $query->where('approved', true)->latest();
+            $query->where('is_approved', true)->latest();
         }]);
 
         $relatedProducts = Product::where('is_active', true)
@@ -82,7 +86,7 @@ class ProductController extends Controller
             ->limit(4)
             ->get();
 
-        $cartItemCount = session('cart', []) ? count(session('cart', [])) : 0;
+        $cartItemCount = $this->cartService->getItemCount();
 
         return view('products.show', [
             'product' => $product,

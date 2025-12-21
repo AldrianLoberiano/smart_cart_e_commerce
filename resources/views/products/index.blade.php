@@ -11,13 +11,6 @@
                     <h3 class="font-bold text-lg mb-4">Filters</h3>
 
                     <form method="GET" action="{{ route('products.index') }}" class="space-y-6">
-                        <!-- Search -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
-                            <input type="text" name="search" value="{{ $filters['search'] ?? '' }}"
-                                placeholder="Search products..." class="input">
-                        </div>
-
                         <!-- Price Range -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Price Range</label>
@@ -63,21 +56,19 @@
                     <div>
                         <form method="GET" action="{{ route('products.index') }}" class="inline-block">
                             @foreach ($filters as $key => $value)
-                                @if ($key !== 'sort_by' && $value)
+                                @if ($key !== 'sort' && $value)
                                     <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                                 @endif
                             @endforeach
-                            <select name="sort_by" onchange="this.form.submit()" class="input">
-                                <option value="created_at"
-                                    {{ ($filters['sort_by'] ?? '') === 'created_at' ? 'selected' : '' }}>Newest</option>
-                                <option value="price_asc"
-                                    {{ ($filters['sort_by'] ?? '') === 'price_asc' ? 'selected' : '' }}>Price: Low to High
+                            <select name="sort" onchange="this.form.submit()" class="input">
+                                <option value="newest">Newest</option>
+                                <option value="price_low" {{ ($filters['sort'] ?? '') === 'price_low' ? 'selected' : '' }}>
+                                    Price: Low to High</option>
+                                <option value="price_high"
+                                    {{ ($filters['sort'] ?? '') === 'price_high' ? 'selected' : '' }}>Price: High to Low
                                 </option>
-                                <option value="price_desc"
-                                    {{ ($filters['sort_by'] ?? '') === 'price_desc' ? 'selected' : '' }}>Price: High to Low
-                                </option>
-                                <option value="name" {{ ($filters['sort_by'] ?? '') === 'name' ? 'selected' : '' }}>Name:
-                                    A to Z</option>
+                                <option value="name" {{ ($filters['sort'] ?? '') === 'name' ? 'selected' : '' }}>Name: A
+                                    to Z</option>
                             </select>
                         </form>
                     </div>

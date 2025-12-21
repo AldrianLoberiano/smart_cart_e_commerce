@@ -15,6 +15,7 @@ class CategorySeeder extends Seeder
                 'name' => 'Electronics',
                 'slug' => 'electronics',
                 'description' => 'Latest electronic gadgets and devices',
+                'icon' => 'electronics',
                 'is_active' => true,
                 'sort_order' => 1,
                 'children' => [
@@ -28,6 +29,7 @@ class CategorySeeder extends Seeder
                 'name' => 'Fashion',
                 'slug' => 'fashion',
                 'description' => 'Trendy clothing and accessories',
+                'icon' => 'fashion',
                 'is_active' => true,
                 'sort_order' => 2,
                 'children' => [
@@ -41,6 +43,7 @@ class CategorySeeder extends Seeder
                 'name' => 'Home & Garden',
                 'slug' => 'home-garden',
                 'description' => 'Everything for your home',
+                'icon' => 'home-garden',
                 'is_active' => true,
                 'sort_order' => 3,
                 'children' => [
@@ -54,6 +57,7 @@ class CategorySeeder extends Seeder
                 'name' => 'Sports & Outdoors',
                 'slug' => 'sports-outdoors',
                 'description' => 'Gear up for your adventures',
+                'icon' => 'sports-outdoors',
                 'is_active' => true,
                 'sort_order' => 4,
                 'children' => [

@@ -24,3 +24,4 @@ yarn-error.log
 *.dump
 /database/*.sqlite
 /database/*.db
+storage/logs/laravel.log

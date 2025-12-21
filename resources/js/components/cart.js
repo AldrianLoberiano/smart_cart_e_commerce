@@ -27,11 +27,20 @@ export default () => ({
     
     // Lifecycle
     init() {
+        console.log('Cart component initialized');
         this.loadCart();
         
         // Listen for cart update events
         window.addEventListener('cart:updated', () => {
+            console.log('Cart updated event received');
             this.loadCart();
+        });
+        
+        // Listen for add-to-cart events from product cards
+        window.addEventListener('add-to-cart', (event) => {
+            console.log('Add to cart event received:', event.detail);
+            const { productId, quantity } = event.detail;
+            this.addItem(productId, quantity);
         });
     },
     
@@ -47,6 +56,7 @@ export default () => ({
     },
     
     async addItem(productId, quantity = 1) {
+        console.log('Adding item to cart:', productId, quantity);
         this.isLoading = true;
         
         try {
@@ -55,7 +65,10 @@ export default () => ({
                 quantity: quantity
             });
             
+            console.log('Cart add response:', response.data);
             this.items = response.data.items;
+            this.isOpen = true; // Open cart sidebar
+            console.log('Cart opened, items:', this.items);
             window.showNotification('Item added to cart', 'success');
             
             // Dispatch event
@@ -132,5 +145,9 @@ export default () => ({
     
     closeCart() {
         this.isOpen = false;
+    },
+    
+    formatPrice(price) {
+        return '$' + parseFloat(price).toFixed(2);
     }
 });

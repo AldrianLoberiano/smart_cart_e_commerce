@@ -9,6 +9,14 @@ use Illuminate\Http\Request;
 class ReviewController extends Controller
 {
     /**
+     * Apply authentication middleware
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
      * Store a new review
      */
     public function store(Request $request, Product $product)
@@ -29,7 +37,9 @@ class ReviewController extends Controller
         }
 
         // Check if user purchased this product
-        $hasPurchased = auth()->user()
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+        $hasPurchased = $user
             ->orders()
             ->whereHas('items', function ($query) use ($product) {
                 $query->where('product_id', $product->id);

@@ -4,10 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Services\CartService;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+    public function __construct(
+        private CartService $cartService
+    ) {}
+
     /**
      * Display homepage
      */
@@ -25,7 +30,7 @@ class HomeController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        $cartItemCount = session('cart', []) ? count(session('cart', [])) : 0;
+        $cartItemCount = $this->cartService->getItemCount();
 
         return view('home', [
             'featuredProducts' => $featuredProducts,

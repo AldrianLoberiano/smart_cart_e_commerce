@@ -36,8 +36,8 @@
                 <h3 class="text-white font-semibold mb-4">Newsletter</h3>
                 <p class="text-sm mb-4">Subscribe to get special offers and updates.</p>
                 <form class="flex">
-                    <input type="email" placeholder="Your email" class="flex-1 px-4 py-2 rounded-l-lg text-gray-900">
-                    <button class="bg-primary-600 px-4 py-2 rounded-r-lg hover:bg-primary-700 transition">
+                    <input type="email" id="newsletter-email" name="email" placeholder="Your email" autocomplete="email" class="flex-1 px-4 py-2 rounded-l-lg text-gray-900">
+                    <button type="submit" class="bg-primary-600 px-4 py-2 rounded-r-lg hover:bg-primary-700 transition">
                         Subscribe
                     </button>
                 </form>

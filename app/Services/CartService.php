@@ -3,18 +3,65 @@
 namespace App\Services;
 
 use App\Models\Product;
+use App\Models\CartItem;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class CartService
 {
-    private const CART_SESSION_KEY = 'shopping_cart';
-
     /**
      * Get cart items
      */
     public function getItems(): array
     {
-        return Session::get(self::CART_SESSION_KEY, []);
+        $items = [];
+
+        if (Auth::check()) {
+            // Get cart items from database for logged-in users
+            $cartItems = CartItem::where('user_id', Auth::id())
+                ->with(['product' => function($query) {
+                    $query->withTrashed(); // Include soft-deleted products
+                }])
+                ->get();
+
+            foreach ($cartItems as $item) {
+                if ($item->product) {
+                    $items["product_{$item->product_id}"] = [
+                        'id' => $item->product->id,
+                        'name' => $item->product->name,
+                        'slug' => $item->product->slug,
+                        'price' => (float) $item->price,
+                        'image' => $item->product->primary_image ?? 'https://placehold.co/600x400?text=No+Image',
+                        'quantity' => $item->quantity,
+                        'is_active' => $item->product->is_active ?? false,
+                    ];
+                }
+            }
+        } else {
+            // Get cart from session for guest users
+            $sessionId = Session::getId();
+            $cartItems = CartItem::where('session_id', $sessionId)
+                ->with(['product' => function($query) {
+                    $query->withTrashed(); // Include soft-deleted products
+                }])
+                ->get();
+
+            foreach ($cartItems as $item) {
+                if ($item->product) {
+                    $items["product_{$item->product_id}"] = [
+                        'id' => $item->product->id,
+                        'name' => $item->product->name,
+                        'slug' => $item->product->slug,
+                        'price' => (float) $item->price,
+                        'image' => $item->product->primary_image ?? 'https://placehold.co/600x400?text=No+Image',
+                        'quantity' => $item->quantity,
+                        'is_active' => $item->product->is_active ?? false,
+                    ];
+                }
+            }
+        }
+
+        return $items;
     }
 
     /**
@@ -28,28 +75,61 @@ class CartService
             throw new \Exception('Product is out of stock');
         }
 
-        $cart = $this->getItems();
-        $itemKey = "product_{$productId}";
+        if (Auth::check()) {
+            // Add to database for logged-in users
+            $cartItem = CartItem::where('user_id', Auth::id())
+                ->where('product_id', $productId)
+                ->first();
 
-        if (isset($cart[$itemKey])) {
-            $cart[$itemKey]['quantity'] += $quantity;
+            if ($cartItem) {
+                $newQuantity = $cartItem->quantity + $quantity;
+
+                if ($product->track_stock && $newQuantity > $product->stock) {
+                    throw new \Exception('Not enough stock available');
+                }
+
+                $cartItem->update(['quantity' => $newQuantity]);
+            } else {
+                if ($product->track_stock && $quantity > $product->stock) {
+                    throw new \Exception('Not enough stock available');
+                }
+
+                CartItem::create([
+                    'user_id' => Auth::id(),
+                    'product_id' => $productId,
+                    'quantity' => $quantity,
+                    'price' => $product->price,
+                ]);
+            }
         } else {
-            $cart[$itemKey] = [
-                'id' => $product->id,
-                'name' => $product->name,
-                'slug' => $product->slug,
-                'price' => $product->price,
-                'image' => $product->primary_image,
-                'quantity' => $quantity,
-            ];
-        }
+            // Add to database with session ID for guest users
+            $sessionId = Session::getId();
 
-        // Check stock availability
-        if ($product->track_stock && $cart[$itemKey]['quantity'] > $product->stock) {
-            throw new \Exception('Not enough stock available');
-        }
+            $cartItem = CartItem::where('session_id', $sessionId)
+                ->where('product_id', $productId)
+                ->first();
 
-        Session::put(self::CART_SESSION_KEY, $cart);
+            if ($cartItem) {
+                $newQuantity = $cartItem->quantity + $quantity;
+
+                if ($product->track_stock && $newQuantity > $product->stock) {
+                    throw new \Exception('Not enough stock available');
+                }
+
+                $cartItem->update(['quantity' => $newQuantity]);
+            } else {
+                if ($product->track_stock && $quantity > $product->stock) {
+                    throw new \Exception('Not enough stock available');
+                }
+
+                CartItem::create([
+                    'session_id' => $sessionId,
+                    'product_id' => $productId,
+                    'quantity' => $quantity,
+                    'price' => $product->price,
+                ]);
+            }
+        }
 
         return $this->getCartData();
     }
@@ -59,24 +139,39 @@ class CartService
      */
     public function updateQuantity(string $itemKey, int $quantity): array
     {
-        $cart = $this->getItems();
-
-        if (!isset($cart[$itemKey])) {
-            throw new \Exception('Item not found in cart');
-        }
-
         if ($quantity <= 0) {
             return $this->removeItem($itemKey);
         }
 
-        // Verify stock
-        $product = Product::find($cart[$itemKey]['id']);
+        $productId = (int) str_replace('product_', '', $itemKey);
+
+        if (Auth::check()) {
+            $cartItem = CartItem::where('user_id', Auth::id())
+                ->where('product_id', $productId)
+                ->with(['product' => function($query) {
+                    $query->withTrashed();
+                }])
+                ->first();
+        } else {
+            $sessionId = Session::getId();
+            $cartItem = CartItem::where('session_id', $sessionId)
+                ->where('product_id', $productId)
+                ->with(['product' => function($query) {
+                    $query->withTrashed();
+                }])
+                ->first();
+        }
+
+        if (!$cartItem) {
+            throw new \Exception('Item not found in cart');
+        }
+
+        $product = $cartItem->product;
         if ($product && $product->track_stock && $quantity > $product->stock) {
             throw new \Exception('Not enough stock available');
         }
 
-        $cart[$itemKey]['quantity'] = $quantity;
-        Session::put(self::CART_SESSION_KEY, $cart);
+        $cartItem->update(['quantity' => $quantity]);
 
         return $this->getCartData();
     }
@@ -86,9 +181,18 @@ class CartService
      */
     public function removeItem(string $itemKey): array
     {
-        $cart = $this->getItems();
-        unset($cart[$itemKey]);
-        Session::put(self::CART_SESSION_KEY, $cart);
+        $productId = (int) str_replace('product_', '', $itemKey);
+
+        if (Auth::check()) {
+            CartItem::where('user_id', Auth::id())
+                ->where('product_id', $productId)
+                ->delete();
+        } else {
+            $sessionId = Session::getId();
+            CartItem::where('session_id', $sessionId)
+                ->where('product_id', $productId)
+                ->delete();
+        }
 
         return $this->getCartData();
     }
@@ -98,7 +202,12 @@ class CartService
      */
     public function clear(): void
     {
-        Session::forget(self::CART_SESSION_KEY);
+        if (Auth::check()) {
+            CartItem::where('user_id', Auth::id())->delete();
+        } else {
+            $sessionId = Session::getId();
+            CartItem::where('session_id', $sessionId)->delete();
+        }
     }
 
     /**
@@ -106,6 +215,9 @@ class CartService
      */
     public function getCartData(): array
     {
+        // Clean up orphaned cart items (products that no longer exist)
+        $this->cleanOrphanedItems();
+        
         $items = $this->getItems();
         $subtotal = 0;
 
@@ -124,13 +236,64 @@ class CartService
             'item_count' => array_sum(array_column($items, 'quantity')),
         ];
     }
+    
+    /**
+     * Clean up cart items with deleted/missing products
+     */
+    private function cleanOrphanedItems(): void
+    {
+        if (Auth::check()) {
+            CartItem::where('user_id', Auth::id())
+                ->whereDoesntHave('product')
+                ->delete();
+        } else {
+            $sessionId = Session::getId();
+            CartItem::where('session_id', $sessionId)
+                ->whereDoesntHave('product')
+                ->delete();
+        }
+    }
 
     /**
      * Get item count
      */
     public function getItemCount(): int
     {
-        $items = $this->getItems();
-        return array_sum(array_column($items, 'quantity'));
+        if (Auth::check()) {
+            return CartItem::where('user_id', Auth::id())->sum('quantity') ?? 0;
+        } else {
+            $sessionId = Session::getId();
+            return CartItem::where('session_id', $sessionId)->sum('quantity') ?? 0;
+        }
+    }
+
+    /**
+     * Merge guest cart with user cart on login
+     */
+    public function mergeGuestCart(int $userId): void
+    {
+        $sessionId = Session::getId();
+
+        $guestItems = CartItem::where('session_id', $sessionId)->get();
+
+        foreach ($guestItems as $guestItem) {
+            $userItem = CartItem::where('user_id', $userId)
+                ->where('product_id', $guestItem->product_id)
+                ->first();
+
+            if ($userItem) {
+                // Merge quantities
+                $userItem->update([
+                    'quantity' => $userItem->quantity + $guestItem->quantity
+                ]);
+                $guestItem->delete();
+            } else {
+                // Transfer to user
+                $guestItem->update([
+                    'user_id' => $userId,
+                    'session_id' => null
+                ]);
+            }
+        }
     }
 }

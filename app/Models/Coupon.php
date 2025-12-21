@@ -4,6 +4,43 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $code
+ * @property string|null $description
+ * @property string $type
+ * @property string $value
+ * @property string|null $min_purchase
+ * @property int|null $usage_limit
+ * @property int $usage_count
+ * @property int|null $per_user_limit
+ * @property \Illuminate\Support\Carbon|null $starts_at
+ * @property \Illuminate\Support\Carbon|null $expires_at
+ * @property bool $is_active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Coupon active()
+ * @method static \Illuminate\Database\Eloquent\Builder|Coupon newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Coupon newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Coupon query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereMinPurchase($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Coupon wherePerUserLimit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereStartsAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereUsageCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereUsageLimit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Coupon whereValue($value)
+ * @mixin \Eloquent
+ */
 class Coupon extends Model
 {
     protected $fillable = [

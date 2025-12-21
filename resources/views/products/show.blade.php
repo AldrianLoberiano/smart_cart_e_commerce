@@ -108,7 +108,8 @@
 
                 <!-- Add to Cart -->
                 <div class="space-y-3 pt-4">
-                    <button @click="$root.addItem({{ $product->id }}, quantity)"
+                    <button
+                        @click="window.dispatchEvent(new CustomEvent('add-to-cart', { detail: { productId: {{ $product->id }}, quantity: quantity } }))"
                         :disabled="!{{ $product->isInStock() ? 'true' : 'false' }}"
                         class="w-full btn btn-primary py-4 text-lg">
                         <svg class="w-6 h-6 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
