@@ -165,11 +165,11 @@ if (config('app.debug')) {
     // Test admin authentication
     Route::get('/test/admin-auth', function () {
         $admin = \App\Models\Admin::where('email', 'admin@smartcart.com')->first();
-        
+
         if (!$admin) {
             return response()->json(['error' => 'Admin not found']);
         }
-        
+
         return response()->json([
             'admin_exists' => true,
             'email' => $admin->email,

@@ -1,63 +1,102 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">My Orders</h1>
-            <p class="mt-2 text-gray-600">View and manage your order history</p>
-        </div>
-
-        @if ($orders->isEmpty())
-            <div class="bg-white rounded-lg shadow-sm p-12 text-center">
-                <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                <h3 class="mt-4 text-lg font-medium text-gray-900">No orders yet</h3>
-                <p class="mt-2 text-gray-500">Start shopping to see your orders here</p>
-                <div class="mt-6">
-                    <a href="{{ route('home') }}"
-                        class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
-                        Continue Shopping
+    <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Enhanced Header -->
+            <div class="mb-8">
+                <nav class="flex items-center text-sm text-gray-600 mb-4">
+                    <a href="{{ route('home') }}" class="hover:text-primary-600 transition">Home</a>
+                    <svg class="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                    <a href="{{ route('account.index') }}" class="hover:text-primary-600 transition">Account</a>
+                    <svg class="w-4 h-4 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                    <span class="text-gray-900 font-medium">My Orders</span>
+                </nav>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-4xl font-bold text-gray-900 mb-2">My Orders</h1>
+                        <p class="text-gray-600">Track and manage your order history</p>
+                    </div>
+                    <a href="{{ route('account.index') }}"
+                        class="inline-flex items-center px-5 py-2.5 bg-white border border-gray-300 rounded-xl shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Back to Account
                     </a>
                 </div>
+            </div>
+
+        @if ($orders->isEmpty())
+            <div class="bg-white rounded-2xl shadow-lg p-16 text-center border border-gray-100">
+                <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-primary-50 to-primary-100 mb-6">
+                    <svg class="w-12 h-12 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">No orders yet</h3>
+                <p class="text-gray-600 mb-8 max-w-md mx-auto">Start your shopping journey and discover amazing products in our store</p>
+                <a href="{{ route('home') }}"
+                    class="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 shadow-lg hover:shadow-xl transition-all duration-200">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    Start Shopping
+                </a>
             </div>
         @else
             <div class="space-y-6">
                 @foreach ($orders as $order)
-                    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100">
                         <!-- Order Header -->
-                        <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                        <div class="bg-gradient-to-r from-gray-50 to-white px-6 py-5 border-b border-gray-200">
                             <div class="flex flex-wrap items-center justify-between gap-4">
-                                <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+                                <div class="flex flex-wrap items-center gap-x-8 gap-y-3">
                                     <div>
-                                        <p class="text-sm text-gray-600">Order Number</p>
-                                        <p class="font-medium text-gray-900">#{{ $order->order_number }}</p>
+                                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Order Number</p>
+                                        <p class="font-bold text-gray-900 text-lg">#{{ $order->order_number }}</p>
                                     </div>
                                     <div>
-                                        <p class="text-sm text-gray-600">Date</p>
-                                        <p class="font-medium text-gray-900">{{ $order->created_at->format('M d, Y') }}</p>
+                                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Date Placed</p>
+                                        <p class="font-semibold text-gray-900">{{ $order->created_at->format('M d, Y') }}</p>
+                                        <p class="text-xs text-gray-500">{{ $order->created_at->format('h:i A') }}</p>
                                     </div>
                                     <div>
-                                        <p class="text-sm text-gray-600">Total</p>
-                                        <p class="font-medium text-gray-900">${{ number_format($order->total, 2) }}</p>
+                                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Total Amount</p>
+                                        <p class="font-bold text-primary-600 text-lg">${{ number_format($order->total, 2) }}</p>
                                     </div>
                                     <div>
-                                        <p class="text-sm text-gray-600">Status</p>
+                                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Status</p>
                                         <span
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                        @if ($order->status === 'pending') bg-yellow-100 text-yellow-800
-                                        @elseif($order->status === 'processing') bg-blue-100 text-blue-800
-                                        @elseif($order->status === 'shipped') bg-purple-100 text-purple-800
-                                        @elseif($order->status === 'delivered') bg-green-100 text-green-800
-                                        @elseif($order->status === 'cancelled') bg-red-100 text-red-800 @endif">
+                                            class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold shadow-sm
+                                        @if ($order->status === 'pending') bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300
+                                        @elseif($order->status === 'processing') bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border border-blue-300
+                                        @elseif($order->status === 'shipped') bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800 border border-purple-300
+                                        @elseif($order->status === 'delivered') bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300
+                                        @elseif($order->status === 'cancelled') bg-gradient-to-r from-red-100 to-red-200 text-red-800 border border-red-300 @endif">
+                                            <span class="w-2 h-2 rounded-full mr-1.5
+                                                @if ($order->status === 'pending') bg-yellow-600
+                                                @elseif($order->status === 'processing') bg-blue-600
+                                                @elseif($order->status === 'shipped') bg-purple-600
+                                                @elseif($order->status === 'delivered') bg-green-600
+                                                @elseif($order->status === 'cancelled') bg-red-600 @endif">
+                                            </span>
                                             {{ ucfirst($order->status) }}
                                         </span>
                                     </div>
                                 </div>
                                 <div>
                                     <a href="{{ route('orders.show', $order) }}"
-                                        class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                        class="inline-flex items-center px-5 py-2.5 border-2 border-primary-600 rounded-xl shadow-sm text-sm font-semibold text-primary-600 bg-white hover:bg-primary-50 hover:shadow-md transition-all duration-200">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
                                         View Details
                                     </a>
                                 </div>
@@ -65,17 +104,23 @@
                         </div>
 
                         <!-- Order Items -->
-                        <div class="px-6 py-4">
+                        <div class="px-6 py-5 bg-white">
+                            <h4 class="text-sm font-semibold text-gray-700 mb-4 flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                </svg>
+                                Order Items ({{ $order->items->count() }})
+                            </h4>
                             <div class="space-y-4">
                                 @foreach ($order->items as $item)
-                                    <div class="flex items-center space-x-4">
+                                    <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
                                         <div class="flex-shrink-0">
                                             @if ($item->product && $item->product->image)
                                                 <img src="{{ asset('storage/' . $item->product->image) }}"
-                                                    alt="{{ $item->product_name }}" class="h-16 w-16 rounded object-cover">
+                                                    alt="{{ $item->product_name }}" class="h-20 w-20 rounded-xl object-cover shadow-md border-2 border-white">
                                             @else
-                                                <div class="h-16 w-16 bg-gray-200 rounded flex items-center justify-center">
-                                                    <svg class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24"
+                                                <div class="h-20 w-20 bg-gradient-to-br from-gray-200 to-gray-300 rounded-xl flex items-center justify-center shadow-md border-2 border-white">
+                                                    <svg class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24"
                                                         stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             stroke-width="2"
@@ -85,11 +130,27 @@
                                             @endif
                                         </div>
                                         <div class="flex-1 min-w-0">
-                                            <p class="text-sm font-medium text-gray-900">{{ $item->product_name }}</p>
-                                            <p class="text-sm text-gray-500">Quantity: {{ $item->quantity }}</p>
+                                            <p class="text-sm font-semibold text-gray-900 mb-1">{{ $item->product_name }}</p>
+                                            <div class="flex items-center space-x-4 text-sm text-gray-600">
+                                                <span class="inline-flex items-center">
+                                                    <svg class="w-4 h-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                                    </svg>
+                                                    Qty: <strong class="ml-1 text-gray-900">{{ $item->quantity }}</strong>
+                                                </span>
+                                                <span class="inline-flex items-center">
+                                                    <svg class="w-4 h-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    Price: <strong class="ml-1 text-gray-900">${{ number_format($item->price, 2) }}</strong>
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div class="text-sm font-medium text-gray-900">
-                                            ${{ number_format($item->price * $item->quantity, 2) }}
+                                        <div class="text-right">
+                                            <p class="text-xs text-gray-500 mb-1">Subtotal</p>
+                                            <p class="text-lg font-bold text-gray-900">
+                                                ${{ number_format($item->price * $item->quantity, 2) }}
+                                            </p>
                                         </div>
                                     </div>
                                 @endforeach
@@ -106,5 +167,6 @@
                 </div>
             @endif
         @endif
+        </div>
     </div>
 @endsection

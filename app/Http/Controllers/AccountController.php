@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use App\Models\User;
 
 class AccountController extends Controller
 {
@@ -18,9 +19,10 @@ class AccountController extends Controller
      */
     public function index()
     {
+        /** @var User $user */
         $user = auth()->user();
         $recentOrders = $user->orders()->latest()->take(5)->get();
-        
+
         return view('account.index', compact('user', 'recentOrders'));
     }
 
@@ -37,6 +39,7 @@ class AccountController extends Controller
      */
     public function update(Request $request)
     {
+        /** @var User $user */
         $user = auth()->user();
 
         $validated = $request->validate([
@@ -67,7 +70,9 @@ class AccountController extends Controller
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
-        auth()->user()->update([
+        /** @var User $user */
+        $user = auth()->user();
+        $user->update([
             'password' => Hash::make($validated['password']),
         ]);
 

@@ -14,7 +14,7 @@ class AuthController extends Controller
         if (Auth::guard('admin')->check()) {
             return redirect()->route('admin.dashboard');
         }
-        
+
         return view('admin.login');
     }
 
@@ -28,10 +28,10 @@ class AuthController extends Controller
         // Attempt authentication
         if (Auth::guard('admin')->attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
-            
+
             // Log successful login
             \Log::info('Admin login successful', ['email' => $credentials['email']]);
-            
+
             return redirect()->intended(route('admin.dashboard'));
         }
 

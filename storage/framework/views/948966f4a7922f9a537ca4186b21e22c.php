@@ -1,13 +1,13 @@
-@extends('layouts.app')
 
-@section('title', 'Change Password')
 
-@section('content')
+<?php $__env->startSection('title', 'Change Password'); ?>
+
+<?php $__env->startSection('content'); ?>
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Back Button -->
             <div class="mb-8">
-                <a href="{{ route('account.index') }}"
+                <a href="<?php echo e(route('account.index')); ?>"
                     class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium transition-colors group">
                     <svg class="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
@@ -127,9 +127,9 @@
                             <p class="text-sm text-gray-600 mt-1">Enter your current password and choose a new one</p>
                         </div>
 
-                        <form method="POST" action="{{ route('account.password.update') }}" class="p-6">
-                            @csrf
-                            @method('PUT')
+                        <form method="POST" action="<?php echo e(route('account.password.update')); ?>" class="p-6">
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('PUT'); ?>
 
                             <div class="space-y-6">
                                 <!-- Current Password -->
@@ -145,18 +145,33 @@
                                         </div>
                                     </label>
                                     <input type="password" name="current_password" id="current_password" required
-                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all @error('current_password') border-red-300 bg-red-50 @enderror"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all <?php $__errorArgs = ['current_password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-300 bg-red-50 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                         placeholder="Enter your current password">
-                                    @error('current_password')
+                                    <?php $__errorArgs = ['current_password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
                                         <div class="flex items-center mt-2 text-red-600 text-sm">
                                             <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
                                                     clip-rule="evenodd" />
                                             </svg>
-                                            {{ $message }}
+                                            <?php echo e($message); ?>
+
                                         </div>
-                                    @enderror
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
 
                                 <!-- New Password -->
@@ -172,18 +187,30 @@
                                         </div>
                                     </label>
                                     <input type="password" name="password" id="password" required
-                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all @error('password') border-red-300 bg-red-50 @enderror"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> border-red-300 bg-red-50 <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
                                         placeholder="Enter your new password">
-                                    @error('password')
+                                    <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
                                         <div class="flex items-center mt-2 text-red-600 text-sm">
                                             <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
                                                     clip-rule="evenodd" />
                                             </svg>
-                                            {{ $message }}
+                                            <?php echo e($message); ?>
+
                                         </div>
-                                    @else
+                                    <?php else: ?>
                                         <p class="text-xs text-gray-600 mt-2 flex items-center">
                                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
@@ -192,7 +219,10 @@
                                             </svg>
                                             Minimum 8 characters required
                                         </p>
-                                    @enderror
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
 
                                 <!-- Confirm Password -->
@@ -218,7 +248,7 @@
 
                             <!-- Form Actions -->
                             <div class="mt-8 flex items-center justify-between pt-6 border-t border-gray-200">
-                                <a href="{{ route('account.index') }}"
+                                <a href="<?php echo e(route('account.index')); ?>"
                                     class="inline-flex items-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-all duration-200">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -241,4 +271,6 @@
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\smart_cart_e_commerce\resources\views/account/password.blade.php ENDPATH**/ ?>
