@@ -12,7 +12,8 @@
 } ?>
 <?php unset($__defined_vars); ?>
 
-<div class="card group cursor-pointer transition-transform hover:scale-105">
+<div class="card group cursor-pointer transition-transform hover:scale-105" data-product-id="<?php echo e($product->id); ?>"
+    data-product-stock="<?php echo e($product->stock); ?>">
     <div class="relative overflow-hidden aspect-square">
         <img src="<?php echo e($product->primary_image ?? 'https://placehold.co/600x400?text=No+Image'); ?>"
             alt="<?php echo e($product->name); ?>"
@@ -74,11 +75,15 @@
                     ?>
                     <div class="flex items-center justify-between text-sm">
                         <?php if($product->isLowStock()): ?>
-                            <span class="badge badge-warning">⚠️ Low Stock</span>
-                            <span class="text-orange-600 font-semibold"><?php echo e($product->stock); ?> left</span>
+                            <span class="stock-badge badge badge-warning">⚠️ Low Stock</span>
+                            <span class="text-orange-600 font-semibold">
+                                <span data-stock-display="<?php echo e($product->id); ?>"><?php echo e($product->stock); ?></span> left
+                            </span>
                         <?php else: ?>
-                            <span class="badge badge-success">✓ In Stock</span>
-                            <span class="text-green-600 font-semibold"><?php echo e($product->stock); ?> available</span>
+                            <span class="stock-badge badge badge-success">✓ In Stock</span>
+                            <span class="text-green-600 font-semibold">
+                                <span data-stock-display="<?php echo e($product->id); ?>"><?php echo e($product->stock); ?></span> available
+                            </span>
                         <?php endif; ?>
                     </div>
                     <!-- Stock Progress Bar -->
@@ -88,8 +93,10 @@
                     </div>
                 <?php else: ?>
                     <div class="flex items-center justify-between text-sm">
-                        <span class="badge badge-danger">✗ Out of Stock</span>
-                        <span class="text-red-600 font-semibold">0 available</span>
+                        <span class="stock-badge badge badge-danger">✗ Out of Stock</span>
+                        <span class="text-red-600 font-semibold">
+                            <span data-stock-display="<?php echo e($product->id); ?>">0</span> available
+                        </span>
                     </div>
                     <div class="w-full bg-gray-200 rounded-full h-2">
                         <div class="h-2 rounded-full bg-red-500" style="width: 0%"></div>
@@ -109,7 +116,7 @@
                 isLowStock: <?php echo e($product->isLowStock() ? 'true' : 'false'); ?>
 
             } })"
-            class="w-full mt-4 btn btn-primary" <?php echo e(!$product->isInStock() ? 'disabled' : ''); ?>>
+            class="w-full mt-4 btn btn-primary add-to-cart-btn" <?php echo e(!$product->isInStock() ? 'disabled' : ''); ?>>
             <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />

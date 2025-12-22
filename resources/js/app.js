@@ -25,6 +25,7 @@ import quantitySelector from './components/quantitySelector';
 import productModal from './components/productModal';
 import searchComponent from './components/search';
 import checkoutComponent from './components/checkout';
+import stockMonitor from './components/stockMonitor';
 
 // Register Alpine components
 Alpine.data('cart', cartComponent);
@@ -32,6 +33,7 @@ Alpine.data('quantitySelector', quantitySelector);
 Alpine.data('productModal', productModal);
 Alpine.data('search', searchComponent);
 Alpine.data('checkout', checkoutComponent);
+Alpine.data('stockMonitor', stockMonitor);
 
 // Start Alpine
 Alpine.start();

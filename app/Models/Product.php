@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\StockUpdated;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -248,9 +249,13 @@ class Product extends Model
         \Log::info("Decrementing stock for product {$this->id} ({$this->name}): {$this->stock} - {$quantity}");
 
         $this->decrement('stock', $quantity);
+        $this->refresh();
+
+        // Broadcast stock update in real-time
+        broadcast(new StockUpdated($this));
 
         // Log result
-        \Log::info("New stock for product {$this->id}: {$this->fresh()->stock}");
+        \Log::info("New stock for product {$this->id}: {$this->stock}");
 
         return true;
     }
@@ -262,6 +267,10 @@ class Product extends Model
     {
         if ($this->track_stock) {
             $this->increment('stock', $quantity);
+            $this->refresh();
+
+            // Broadcast stock update in real-time
+            broadcast(new StockUpdated($this));
         }
     }
 }

@@ -72,17 +72,53 @@ Route::view('/terms-of-service', 'pages.terms-of-service')->name('terms.service'
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
 
-// Orders
-Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-Route::get('/orders/{order}/confirmation', [OrderController::class, 'confirmation'])->name('orders.confirmation');
-Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+// Orders (must be authenticated as user)
+Route::middleware('auth:web')->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders/{order}/confirmation', [OrderController::class, 'confirmation'])->name('orders.confirmation');
+    Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+});
 
 // Reviews (must be authenticated)
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:web')->group(function () {
     Route::post('/products/{product}/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
     Route::put('/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'update'])->name('reviews.update');
     Route::delete('/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'destroy'])->name('reviews.destroy');
+});
+
+// User Account Management
+Route::middleware('auth:web')->prefix('account')->name('account.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\AccountController::class, 'index'])->name('index');
+    Route::get('/edit', [\App\Http\Controllers\AccountController::class, 'edit'])->name('edit');
+    Route::put('/update', [\App\Http\Controllers\AccountController::class, 'update'])->name('update');
+    Route::get('/password', [\App\Http\Controllers\AccountController::class, 'passwordForm'])->name('password');
+    Route::put('/password', [\App\Http\Controllers\AccountController::class, 'updatePassword'])->name('password.update');
+});
+
+// Admin Authentication Routes
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/login', [\App\Http\Controllers\Admin\AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [\App\Http\Controllers\Admin\AuthController::class, 'login'])->name('login.post');
+    Route::post('/logout', [\App\Http\Controllers\Admin\AuthController::class, 'logout'])->name('logout');
+});
+
+// Admin Routes (must be authenticated with rate limiting)
+Route::prefix('admin')->name('admin.')->middleware(['admin.ratelimit', 'admin'])->group(function () {
+    Route::get('/dashboard', function () {
+        $stats = [
+            'total_products' => \App\Models\Product::count(),
+            'active_products' => \App\Models\Product::where('is_active', true)->count(),
+            'low_stock' => \App\Models\Product::whereColumn('stock', '<=', 'low_stock_threshold')->where('stock', '>', 0)->count(),
+            'out_of_stock' => \App\Models\Product::where('stock', 0)->count(),
+            'total_orders' => \App\Models\Order::count(),
+            'pending_orders' => \App\Models\Order::where('status', 'pending')->count(),
+        ];
+        return view('admin.dashboard', compact('stats'));
+    })->name('dashboard');
+
+    Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
+    Route::post('products/bulk-action', [\App\Http\Controllers\Admin\ProductController::class, 'bulkAction'])->name('products.bulk-action');
 });
 
 // Guest checkout (optional)
@@ -115,4 +151,33 @@ if (config('app.debug')) {
         return redirect()->route('cart.index')
             ->with('success', 'Added ' . $products->count() . ' products to your cart for testing!');
     })->name('test.cart');
+
+    // Real-time stock test page
+    Route::get('/test/realtime-stock', function () {
+        return view('test-realtime-stock');
+    })->name('test.realtime.stock');
+
+    // Diagnostic page
+    Route::get('/test/diagnostic', function () {
+        return view('diagnostic');
+    })->name('test.diagnostic');
+
+    // Test admin authentication
+    Route::get('/test/admin-auth', function () {
+        $admin = \App\Models\Admin::where('email', 'admin@smartcart.com')->first();
+        
+        if (!$admin) {
+            return response()->json(['error' => 'Admin not found']);
+        }
+        
+        return response()->json([
+            'admin_exists' => true,
+            'email' => $admin->email,
+            'has_password' => !empty($admin->password),
+            'password_length' => strlen($admin->password),
+            'password_check' => \Hash::check('admin123', $admin->password),
+            'guard_driver' => config('auth.guards.admin.driver'),
+            'guard_provider' => config('auth.guards.admin.provider'),
+        ]);
+    })->name('test.admin.auth');
 }
