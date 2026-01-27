@@ -1,4 +1,4 @@
-# 🛒 SmartCart E-Commerce Platform
+#  SmartCart E-Commerce Platform
 
 A modern, feature-rich e-commerce platform built with Laravel, Alpine.js, and Tailwind CSS. SmartCart provides a seamless shopping experience with real-time stock management, secure payment processing, and a beautiful, responsive UI.
 
@@ -9,9 +9,9 @@ A modern, feature-rich e-commerce platform built with Laravel, Alpine.js, and Ta
 
 ---
 
-## ✨ Features
+##  Features
 
-### 🛍️ Customer Features
+###  Customer Features
 - **Modern UI/UX** - Beautiful, responsive design with gradient themes and smooth animations
 - **Product Browsing** - Advanced filtering, sorting, and search capabilities
 - **Real-time Stock Updates** - Live stock monitoring with visual progress bars
@@ -29,7 +29,7 @@ A modern, feature-rich e-commerce platform built with Laravel, Alpine.js, and Ta
 - **User Management** - View and manage customer accounts
 - **Stock Tracking** - Real-time inventory monitoring
 
-### 🚀 Technical Features
+###  Technical Features
 - **Real-time Stock Management** - Automatic stock updates with low stock alerts
 - **API Integration** - RESTful API for cart and stock operations
 - **Service Layer Architecture** - Clean separation of concerns
@@ -39,7 +39,7 @@ A modern, feature-rich e-commerce platform built with Laravel, Alpine.js, and Ta
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### Backend
 - **Laravel 10.x** - PHP Framework
@@ -60,7 +60,7 @@ A modern, feature-rich e-commerce platform built with Laravel, Alpine.js, and Ta
 
 ---
 
-## 📋 Requirements
+##  Requirements
 
 - PHP 8.1 or higher
 - Composer
@@ -70,7 +70,7 @@ A modern, feature-rich e-commerce platform built with Laravel, Alpine.js, and Ta
 
 ---
 
-## 🚀 Installation
+##  Installation
 
 ### 1. Clone the Repository
 ```bash
@@ -153,7 +153,7 @@ Visit `http://localhost:8000` in your browser.
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 smart_cart_e_commerce/
@@ -180,7 +180,7 @@ smart_cart_e_commerce/
 
 ---
 
-## 🔑 Key Services
+##  Key Services
 
 ### CartService
 Handles all shopping cart operations:
@@ -210,7 +210,7 @@ Payment processing:
 
 ---
 
-## 🎨 UI Components
+##  UI Components
 
 ### Reusable Components
 - **Product Card** - Display product information with add-to-cart
@@ -228,7 +228,7 @@ Payment processing:
 
 ---
 
-## 🔐 Security Features
+##  Security Features
 
 - **CSRF Protection** - Laravel's built-in CSRF tokens
 - **Password Hashing** - Bcrypt password encryption
@@ -239,7 +239,7 @@ Payment processing:
 
 ---
 
-## 📊 Database Schema
+##  Database Schema
 
 ### Main Tables
 - **users** - Customer accounts
@@ -255,7 +255,7 @@ Payment processing:
 
 ---
 
-## 🧪 API Endpoints
+##  API Endpoints
 
 ### Cart API
 ```
@@ -272,7 +272,7 @@ GET /api/product-stock/{id}   # Get current stock level
 
 ---
 
-## 🌐 Browser Support
+##  Browser Support
 
 - Chrome (latest)
 - Firefox (latest)
@@ -282,7 +282,7 @@ GET /api/product-stock/{id}   # Get current stock level
 
 ---
 
-## 📝 Configuration Files
+##  Configuration Files
 
 ### Key Configuration
 - `config/shop.php` - Shop settings (currency, tax, shipping)
@@ -292,7 +292,7 @@ GET /api/product-stock/{id}   # Get current stock level
 
 ---
 
-## 🎯 Key Features Highlight
+##  Key Features Highlight
 
 ### Real-time Stock Management
 - Live stock updates every 5 seconds
@@ -315,7 +315,7 @@ GET /api/product-stock/{id}   # Get current stock level
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -327,7 +327,7 @@ Contributions are welcome! Please follow these steps:
 
 ---
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Common Issues
 
@@ -348,13 +348,7 @@ Contributions are welcome! Please follow these steps:
 
 ---
 
-## 📄 License
-
-This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
----
-
-## 👨‍💻 Support
+##  Support
 
 For support, please:
 - Open an issue on GitHub
@@ -363,7 +357,7 @@ For support, please:
 
 ---
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - Built with [Laravel](https://laravel.com)
 - UI powered by [Tailwind CSS](https://tailwindcss.com)
@@ -372,7 +366,7 @@ For support, please:
 
 ---
 
-## 📸 Screenshots
+##  Screenshots
 
 ### Home Page
 Modern hero section with featured products and categories
