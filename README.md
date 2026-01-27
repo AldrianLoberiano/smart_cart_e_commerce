@@ -21,7 +21,7 @@ A modern, feature-rich e-commerce platform built with Laravel, Alpine.js, and Ta
 - **Product Reviews** - Rate and review purchased products
 - **Responsive Design** - Optimized for mobile, tablet, and desktop
 
-### 🔧 Admin Features
+###  Admin Features
 - **Product Management** - CRUD operations with image upload
 - **Order Management** - Track and update order statuses
 - **Category Management** - Organize products into categories
